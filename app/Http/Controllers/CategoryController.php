@@ -81,9 +81,11 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
 
+        $category->books()->detach();
+
         $category->delete();
 
-        return response()->json([
+        return response()->json([   
             'message' => 'category deleted successfully',
         ], 200);
     }
