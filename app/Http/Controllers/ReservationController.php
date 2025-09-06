@@ -14,13 +14,14 @@ class ReservationController extends Controller
      */
     public function index()
     {
-        $reservations = Reservation::all();
+        $reservations = Reservation::where('user_id', auth()->id())->with('book')->get();
 
         return response()->json([
             'message' => 'Reservations loaded',
             'reservations' => ReservationResource::collection($reservations)
-        ],200);
+        ], 200);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -29,15 +30,22 @@ class ReservationController extends Controller
     {
         $fields = $request->validated();
 
-        $fields['status']  = $fields['status'] ?? 'pending';
+        $fields['user_id'] = auth()->id();
+
+        $fields['reserved_at'] = $fields['reserved_at'] ?? now();
+
+        $fields['status'] = $fields['status'] ?? 'pending';
 
         $reservation = Reservation::create($fields);
 
+        $reservation->load('book');
+
         return response()->json([
             'message' => 'Reservation created successfully',
-            'reservation' => ReservationResource::make($reservation)
-        ],201);
+            'reservation' => new ReservationResource($reservation)
+        ], 201);
     }
+
 
     /**
      * Display the specified resource.
@@ -49,7 +57,7 @@ class ReservationController extends Controller
         return response()->json([
             'message' => 'Reservation fetched successfully',
             'reservation' => ReservationResource::make($reservation)
-        ],200);
+        ], 200);
     }
 
     /**
@@ -66,7 +74,7 @@ class ReservationController extends Controller
         return response()->json([
             'message' => 'Reservation updated successfully',
             'reservation' => ReservationResource::make($reservation)
-        ],200);
+        ], 200);
     }
 
     /**
@@ -80,6 +88,6 @@ class ReservationController extends Controller
 
         return response()->json([
             'message' => 'Reservation deleted successfully ',
-        ],200);
+        ], 200);
     }
 }

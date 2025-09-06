@@ -17,9 +17,14 @@ class ReservationResource extends JsonResource
         return [
             'id' => $this->id,
             'status' => $this->status,
-            'reserved_at' => $this->reserved_at->format('d-m-Y H:i'),
+            'reserved_at' => $this->reserved_at ? $this->reserved_at->format('d-m-Y H:i') : null,
             'created_at' => $this->created_at->format('d-m-Y H:i'),
-            'updated_at' => $this->updated_at->format('d-m-Y H:i')
+            'updated_at' => $this->updated_at->format('d-m-Y H:i'),
+            'book' => $this->book ? [
+                'id' => $this->book->id,
+                'title' => $this->book->title,
+                'author' => $this->book->author,
+            ] : null,
         ];
     }
 }

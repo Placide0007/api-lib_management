@@ -57,7 +57,7 @@ class BookController extends Controller
      */
     public function show(string $id)
     {
-        $book = Book::findOrFail($id);
+        $book = Book::with('categories')->findOrFail($id);
 
         return response()->json([
             'message' => 'Book fetched successfully',
@@ -108,6 +108,8 @@ class BookController extends Controller
         if ($book->cover_image && Storage::disk('public')->exists($book->cover_image)) {
             Storage::disk('public')->delete($book->cover_image);
         }
+
+        $book->categories()->detach();
 
         $book->delete();
 

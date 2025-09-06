@@ -20,6 +20,13 @@ Route::apiResource('books', BookController::class);
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('loans', LoanController::class);
 Route::apiResource('posts', PostController::class);
-Route::apiResource('reservations', ReservationController::class);
+Route::get('/admin/loans', [LoanController::class, 'adminIndex']);
+Route::put('/reservations/{reservation}/borrow', [LoanController::class, 'borrowFromReservation']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('reservations', ReservationController::class);
+});
+
 Route::post('/login', [LoginController::class, 'login'])->name('login');
+
 Route::post('/register', [RegisterController::class, 'register'])->name('register');

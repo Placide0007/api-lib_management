@@ -24,7 +24,6 @@ class ReservationRequest extends FormRequest
         return [
             'reserved_at' => ['required', 'date'],
             'status' => ['string','in:pending,canceled,approved'],
-            'user_id' => ['required','exists:users,id'],
             'book_id' => ['required','exists:books,id'],
         ];
     }
