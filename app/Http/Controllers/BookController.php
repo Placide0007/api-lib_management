@@ -17,7 +17,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::with('categories')->get();
+        $books = Book::with('categories')->orderBy('created_at','desc')->get();
 
         return response()->json([
             'message' => 'Books loaded',
