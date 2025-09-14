@@ -24,6 +24,7 @@ Route::apiResource('categories', CategoryController::class);
 Route::apiResource('loans', LoanController::class);
 Route::apiResource('posts', PostController::class);
 Route::get('/admin/loans', [LoanController::class, 'adminIndex']);
+Route::put('/admin/loans/{id}/return', [LoanController::class, 'returnBook'])->middleware('auth:sanctum'); 
 Route::put('/reservations/{reservation}/borrow', [LoanController::class, 'borrowFromReservation']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('reservations', ReservationController::class);

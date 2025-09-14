@@ -42,7 +42,7 @@ class LoanController extends Controller
                     'returned_at' => $loan->returned_at,
                 ];
             })
-            
+
         ], 200);
     }
 
@@ -52,6 +52,8 @@ class LoanController extends Controller
     public function store(LoanRequest $request)
     {
         $fields = $request->validated();
+
+        $fields['due_date'] = $fields['due_date'] ?? now()->addWeeks(2);
 
         $loan = Loan::create($fields);
 
@@ -103,7 +105,32 @@ class LoanController extends Controller
         ], 200);
     }
 
-    public function borrowFromReservation($reservationId)
+    public function returnBook($id)
+    {
+        try {
+            $loan = Loan::findOrFail($id);
+
+            if ($loan->returned_at) {
+                return response()->json(['message' => 'Ce livre a déjà été retourné.'], 400);
+            }
+
+            $loan->returned_at = now();
+            $loan->save();
+
+            return response()->json([
+                'message' => 'Livre retourné avec succès.',
+                'loan' => $loan
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erreur serveur',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function borrowFromReservation(Request $request, $reservationId)
     {
         try {
             $reservation = Reservation::findOrFail($reservationId);
@@ -112,11 +139,13 @@ class LoanController extends Controller
                 return response()->json(['message' => 'Réservation déjà traitée'], 400);
             }
 
+            $durationDays = $request->input('duration_days', 14);
+
             $loan = Loan::create([
                 'user_id' => $reservation->user_id,
                 'book_id' => $reservation->book_id,
                 'borrowed_at' => now(),
-                'due_date' => now()->addWeeks(2),
+                'due_date' => now()->addDays($durationDays),
             ]);
 
             $reservation->update(['status' => 'approved']);
