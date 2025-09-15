@@ -6,7 +6,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://lib-front-klhy.vercel.app'],
+    'allowed_origins' => ['https://api-libmanagement-production.up.railway.app'],
 
     'allowed_origins_patterns' => [],
 
