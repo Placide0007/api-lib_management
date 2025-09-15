@@ -22,7 +22,7 @@ class BookResource extends JsonResource
             'isbn' => $this->isbn,
             'description' => $this->description,
             'quantity' => $this->quantity,
-            'cover_image' => $this->cover_image  ? asset('storage/' . $this->cover_image) : null,
+            'cover_image' => $this->cover_image ? asset('storage/' . $this->cover_image, true) : null,
             'created_at' => $this->created_at->format('d-m-Y H:i'),
             'updated_at' => $this->updated_at->format('d-m-Y H:i'),
         ];
